@@ -10,6 +10,7 @@ class Artist(models.Model):
     slug = models.SlugField(max_length=180, unique=True, blank=True)
     phone = models.CharField(max_length=32, blank=True, help_text="Optional public contact number for this artist.")
     email = models.EmailField(blank=True, help_text="Optional public email address.")
+    instagram_url = models.URLField("Instagram link", blank=True)
     facebook_url = models.URLField("Facebook link", blank=True)
     whatsapp_url = models.URLField("WhatsApp link", blank=True, help_text="Use a WhatsApp chat link, for example https://wa.me/2547XXXXXXXX.")
     tiktok_url = models.URLField("TikTok link", blank=True)
@@ -43,6 +44,18 @@ class Artist(models.Model):
         digits = "".join(character for character in self.phone if character.isdigit())
         return f"+{digits}" if self.phone.strip().startswith("+") else digits
 
+    @property
+    def whatsapp_chat_url(self):
+        if self.whatsapp_url:
+            return self.whatsapp_url
+
+        digits = "".join(character for character in self.phone if character.isdigit())
+        if digits.startswith("0"):
+            digits = "254" + digits[1:]
+        if 8 <= len(digits) <= 15:
+            return f"https://wa.me/{digits}"
+        return ""
+
     def __str__(self):
         return self.name
 
@@ -62,6 +75,70 @@ class Exhibition(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class HomeBanner(models.Model):
+    label = models.CharField(
+        max_length=120,
+        blank=True,
+        help_text="Optional internal label to help identify this banner in the admin.",
+    )
+    image = models.FileField(
+        "Banner image",
+        upload_to="banners/home/",
+        validators=[FileExtensionValidator(("jpg", "jpeg", "png", "webp", "gif")), validate_gallery_image],
+        help_text="Upload a JPG, PNG, WEBP or GIF image up to 10 MB.",
+    )
+    is_active = models.BooleanField(
+        default=True,
+        help_text="Only active banners rotate on the homepage.",
+    )
+    display_order = models.PositiveIntegerField(
+        default=0,
+        help_text="Lower numbers appear earlier in the rotation.",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ("display_order", "pk")
+        verbose_name = "Home banner"
+        verbose_name_plural = "Home banners"
+
+    def __str__(self):
+        return self.label or f"Homepage banner {self.pk or 'new'}"
+
+
+class ExploreTopic(models.Model):
+    name = models.CharField(max_length=120, unique=True)
+    slug = models.SlugField(max_length=140, unique=True, blank=True)
+    is_visible = models.BooleanField(
+        default=True,
+        verbose_name="Visible on About page",
+        help_text="Visible topics appear as links on the About page and can be opened by visitors.",
+    )
+    display_order = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ("display_order", "name")
+        verbose_name = "Explore topic"
+        verbose_name_plural = "Explore topics"
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base_slug = slugify(self.name) or "explore"
+            slug = base_slug
+            suffix = 2
+            while ExploreTopic.objects.filter(slug=slug).exclude(pk=self.pk).exists():
+                slug = f"{base_slug}-{suffix}"
+                suffix += 1
+            self.slug = slug
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
 
 
 class Artwork(models.Model):
@@ -120,6 +197,60 @@ class Artwork(models.Model):
         return f"https://wa.me/{digits}" if digits else ""
 
 
+class ExploreArtwork(models.Model):
+    class Status(models.TextChoices):
+        NOT_FOR_SALE = "not_for_sale", "Not for Sale"
+        AVAILABLE = "available", "Available"
+        SOLD = "sold", "Sold"
+
+    topic = models.ForeignKey(ExploreTopic, on_delete=models.CASCADE, related_name="uploaded_artworks")
+    title = models.CharField(max_length=180)
+    year = models.CharField(max_length=32)
+    description = models.TextField(blank=True, help_text="Optional. Visitors can open the artwork information control to read this.")
+    image = models.FileField(
+        "Artwork image",
+        upload_to="gallery/explore/",
+        validators=[FileExtensionValidator(("jpg", "jpeg", "png", "webp", "gif")), validate_gallery_image],
+        help_text="Upload a JPG, PNG, WEBP or GIF image up to 10 MB.",
+    )
+    status = models.CharField(
+        max_length=12,
+        choices=Status.choices,
+        default=Status.AVAILABLE,
+        help_text="This label appears on the artwork card. Available works link to WhatsApp; Sold and Not for Sale are informational labels.",
+    )
+    whatsapp_number = models.CharField(
+        max_length=32,
+        blank=True,
+        help_text="Required for Available works. Enter the full international number, including country code.",
+    )
+    display_order = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ("-year", "display_order", "title")
+        verbose_name = "Explore page artwork"
+        verbose_name_plural = "Explore page artworks"
+
+    def __str__(self):
+        return f"{self.title} ({self.topic.name})"
+
+    def clean(self):
+        super().clean()
+        digits = "".join(character for character in self.whatsapp_number if character.isdigit())
+        if self.status == self.Status.AVAILABLE:
+            if not digits:
+                raise ValidationError({"whatsapp_number": "Add a WhatsApp number for an available artwork."})
+            if not 8 <= len(digits) <= 15:
+                raise ValidationError({"whatsapp_number": "Enter a valid international WhatsApp number with 8 to 15 digits."})
+
+    @property
+    def whatsapp_uri(self):
+        digits = "".join(character for character in self.whatsapp_number if character.isdigit())
+        return f"https://wa.me/{digits}" if digits else ""
+
+
 class AboutPage(models.Model):
     intro_label = models.CharField(max_length=100, default="Get to know us")
     title = models.CharField(max_length=180, default="About The Akash Art Space")
@@ -128,7 +259,6 @@ class AboutPage(models.Model):
     space_heading = models.CharField(max_length=180, default="A place to encounter art")
     space_text = models.TextField(default="The Akash Art Space is dedicated to showcasing art, encouraging imagination, and making room for creative expression. Art can communicate ideas, express identity, explore different perspectives, and connect people through visual experiences.\n\nWe celebrate artistic creativity and invite people to discover, experience, and appreciate the diversity of art.")
     explore_heading = models.CharField(max_length=180, default="What you can explore")
-    explore_items = models.TextField(default="Paintings\nSculpture\nMixed Media Crafts\nMosaics\nGuided Meditation", help_text="Enter one item per line.")
     vision_heading = models.CharField(max_length=180, default="Our creative vision")
     vision_text = models.TextField(default="We believe art can inspire curiosity, encourage exploration, and help us see the world from fresh perspectives.\n\nWhether you are an artist, student, collector, or discovering art for the first time, you are welcome to explore and enjoy creative expression here.")
     visit_label = models.CharField(max_length=100, default="Plan ahead")
@@ -144,10 +274,6 @@ class AboutPage(models.Model):
     class Meta:
         verbose_name = "About page"
         verbose_name_plural = "About page"
-
-    @property
-    def explore_item_list(self):
-        return [item.strip() for item in self.explore_items.splitlines() if item.strip()]
 
     def __str__(self):
         return "About page content"

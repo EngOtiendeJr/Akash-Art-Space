@@ -15,4 +15,5 @@ urlpatterns = [
     path("exhibitions/<slug:exhibition_slug>/", RedirectView.as_view(pattern_name="main:exhibitions", permanent=True), name="exhibition_detail"),
     path("artists/", RedirectView.as_view(pattern_name="main:about", permanent=True), name="artists"),
     path("gallery/", views.gallery, name="gallery"),
+    path("explore/<slug:topic_slug>/", views.explore_topic, name="explore_topic"),
 ]

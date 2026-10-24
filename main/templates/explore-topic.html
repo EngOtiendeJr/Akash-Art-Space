@@ -1,0 +1,49 @@
+{% extends "index.html" %}
+
+{% block title %}{{ topic.name }} | The Akash Art Space{% endblock %}
+{% block meta_description %}Explore {{ topic.name }} at The Akash Art Space.{% endblock %}
+
+{% block content %}
+<main id="main-content">
+    <section class="section gallery-section page-listing artwork-listing" aria-labelledby="topic-title">
+        <div class="container">
+            <nav class="topic-breadcrumb" aria-label="Breadcrumb">
+                <a href="{% url 'main:about' %}">About</a>
+                <span aria-hidden="true">/</span>
+                <span aria-current="page">{{ topic.name }}</span>
+            </nav>
+            <div class="section-heading">
+                <p class="eyebrow">What you can explore</p>
+                <h1 id="topic-title">{{ topic.name }}</h1>
+                <p class="section-intro">Explore {{ topic.name|lower }} from The Akash Art Space.</p>
+            </div>
+            {% if topic_artworks %}
+                <div class="gallery-grid">
+                    {% for artwork in topic_artworks %}
+                        <article class="gallery-card artwork-card">
+                            <div class="home-exhibition-image artwork-image">
+                                <img src="{{ artwork.image.url }}" alt="{{ artwork.title }}" loading="lazy">
+                                {% if artwork.description %}<details class="artwork-description-toggle">
+                                    <summary aria-label="Read the description of {{ artwork.title }}"></summary>
+                                    <div class="artwork-description-overlay">{{ artwork.description|linebreaks }}</div>
+                                </details>{% endif %}
+                            </div>
+                            <div class="gallery-caption">
+                                {% if artwork.status == 'available' and artwork.whatsapp_uri %}<a class="artwork-status artwork-status--{{ artwork.status }} artwork-status--link" href="{{ artwork.whatsapp_uri }}" target="_blank" rel="noopener noreferrer" aria-label="Ask about {{ artwork.title }} on WhatsApp">{{ artwork.get_status_display }} <span aria-hidden="true">↗</span></a>
+                                {% else %}<p class="artwork-status artwork-status--{{ artwork.status }}">{{ artwork.get_status_display }}</p>{% endif %}
+                                <h2>{{ artwork.title }}</h2>
+                                <p class="artwork-details">{{ artwork.year }}</p>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="home-empty-state">
+                    <h2>Works for {{ topic.name|lower }} are coming soon.</h2>
+                    <p>Check back soon to explore artworks in this collection.</p>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+</main>
+{% endblock %}

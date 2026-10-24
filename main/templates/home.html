@@ -5,11 +5,14 @@
 
 {% block content %}
 <main id="main-content">
-    <section class="hero home-hero" aria-labelledby="home-title"
-        data-banner-two="{% static 'img/background-banner-2.jpeg' %}"
-        data-banner-three="{% static 'img/background-banner-3.jpeg' %}"
-        data-banner-four="{% static 'img/background-banner-4.jpeg' %}">
-        <img class="home-hero-background" src="{% static 'img/background-banner.jpeg' %}" alt="" aria-hidden="true">
+    <section class="hero home-hero" aria-labelledby="home-title">
+        {% if home_banners %}
+            {% for banner in home_banners %}
+                <img class="home-hero-background{% if forloop.first %} is-active{% endif %}" src="{{ banner.image.url }}" alt="" aria-hidden="true" {% if not forloop.first %}loading="lazy"{% endif %}>
+            {% endfor %}
+        {% else %}
+            <img class="home-hero-background is-active" src="{% static 'img/background-banner.jpeg' %}" alt="" aria-hidden="true">
+        {% endif %}
         <div class="container">
             <div class="hero-content">
                 <h1 id="home-title">Art as an expression of the divine.</h1>
@@ -22,65 +25,28 @@
         </div>
     </section>
 
-    <section class="section gallery-section home-exhibitions" aria-labelledby="home-exhibitions-title">
-        <div class="container">
-            <div class="section-heading">
-                <p class="eyebrow">At the gallery</p>
-                <h2 id="home-exhibitions-title">Exhibitions to discover</h2>
-                <p class="section-intro">Explore exhibitions at The Akash Art Space, listed with the latest dates first.</p>
-            </div>
-
-            {% if featured_exhibitions %}
-                <div class="exhibition-text-list">
-                    {% for exhibition in featured_exhibitions %}
-                        <article class="exhibition-list-item">
-                            <h3>{{ exhibition.title }}</h3>
-                            {% if exhibition.start_date %}<p class="exhibition-dates"><time datetime="{{ exhibition.start_date|date:'Y-m-d' }}">{{ exhibition.start_date|date:"j F Y" }}</time></p>{% endif %}
-                            {% if exhibition.description %}<p>{{ exhibition.description|linebreaksbr }}</p>{% endif %}
-                        </article>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <div class="home-empty-state">
-                    <h3>New exhibitions are on the way.</h3>
-                    <p>Contact the artist to ask about upcoming shows and arrange a visit.</p>
-                    <a class="text-link" href="{% url 'main:contact' %}">Contact the gallery</a>
-                </div>
-            {% endif %}
-
-            <div class="home-section-link">
-                <a class="btn btn-red-outline" href="{% url 'main:exhibitions' %}">View all exhibitions</a>
-            </div>
-        </div>
-    </section>
-
     <section class="section visit-section home-visit" id="visit" aria-labelledby="visit-title">
         <div class="container visit-grid">
             <div class="visit-intro">
-                <p class="eyebrow">Visitor information</p>
                 <h2 id="visit-title">Plan your visit</h2>
-                <p class="section-intro">
-                    Visitors are welcome by appointment. Please call or email before travelling
-                    so the gallery can confirm access and arrangements.
-                </p>
             </div>
 
             <div class="visit-details" aria-label="Gallery contact and location details">
                 <div class="visit-detail">
                     <h3>Address</h3>
-                    <p>xxxxx Estate xxx<br>Nairobi, Kenya<br>P.O. Box xxx, xxxx</p>
+                    <p>Mwiki Red soil 8th Street<br> Kasarani, Nairobi, Kenya</p>
                 </div>
                 <div class="visit-detail">
                     <h3>Telephone</h3>
-                    <a href="tel:+254722521870">+254x xxx xxx xx</a>
+                    <a href="tel:+25415727052">+254 157 270 52</a>
                 </div>
                 <div class="visit-detail">
                     <h3>Email</h3>
-                    <a href="mailto:carol@oneoffcontemporaryart.com">==========@gmail.com</a>
+                    <a href="mailto:silvestermwangi19@gmail.com">silvestermwangi19@gmail.com</a>
                 </div>
                 <div class="visit-detail">
                     <h3>Appointments</h3>
-                    <p>Call or email the gallery to confirm your visit.</p>
+                    <p>Call or email the Artist to confirm your visit.</p>
                 </div>
             </div>
         </div>

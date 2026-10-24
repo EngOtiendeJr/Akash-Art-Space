@@ -18,7 +18,6 @@
         <div class="container">
             <div class="section-heading">
                 <p class="eyebrow">Artist Biography</p>
-                <h2 id="about-artists-title">Artists at The Akash Art Space</h2>
                 
             </div>
             {% if artists %}
@@ -36,10 +35,12 @@
 
     <section class="about-page" aria-label="About the gallery">
         <div class="about-feature-grid">
-            <article class="about-content-card about-feature-card">
-                <h2>{{ about_page.explore_heading }}</h2>
+            <article class="about-content-card about-feature-card about-collections" aria-labelledby="about-collections-title">
+                <p class="eyebrow">Explore the collection</p>
+                <h2 id="about-collections-title">What you can explore</h2>
+                <p>Select a collection below to open its dedicated gallery page.</p>
                 <ul class="about-list">
-                    {% for item in about_page.explore_item_list %}<li>{{ item }}</li>{% endfor %}
+                    {% for topic in explore_topics %}<li><a href="{% url 'main:explore_topic' topic.slug %}">{{ topic.name }}</a></li>{% empty %}<li>Explore topics will be added soon.</li>{% endfor %}
                 </ul>
             </article>
         </div>

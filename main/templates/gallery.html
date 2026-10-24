@@ -10,7 +10,6 @@
             <div class="section-heading">
                 <p class="eyebrow">Art collection</p>
                 <h1 id="gallery-title">Gallery</h1>
-                <p class="section-intro">Browse artworks{% if artist_profile %} by {{ artist_profile.name }}{% endif %}. Each work is marked available, sold, or not for sale.</p>
             </div>
 
             {% if artworks %}
@@ -20,7 +19,7 @@
                             <div class="home-exhibition-image artwork-image">
                                 <img src="{{ artwork.image.url }}" alt="{{ artwork.title }}" loading="lazy">
                                 {% if artwork.description %}<details class="artwork-description-toggle">
-                                    <summary aria-label="Read the description of {{ artwork.title }}"><span aria-hidden="true">i</span></summary>
+                                    <summary aria-label="Read the description of {{ artwork.title }}"></summary>
                                     <div class="artwork-description-overlay">{{ artwork.description|linebreaks }}</div>
                                 </details>{% endif %}
                             </div>

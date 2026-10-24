@@ -1,18 +1,35 @@
 from pathlib import Path
 import os
 
+from django.core.exceptions import ImproperlyConfigured
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get(
-    "DJANGO_SECRET_KEY",
-    "dev-only-change-this-key-before-deployment",
-)
-DEBUG = os.environ.get("DJANGO_DEBUG", "true").strip().lower() in {"1", "true", "yes", "on"}
+def _env_bool(name, default=False):
+    return os.environ.get(name, str(default)).strip().lower() in {"1", "true", "yes", "on"}
+
+
+DEBUG = _env_bool("DJANGO_DEBUG", True)
+_configured_secret_key = os.environ.get("DJANGO_SECRET_KEY", "").strip()
+_configured_hosts = os.environ.get("DJANGO_ALLOWED_HOSTS", "").strip()
+
+if not DEBUG and not _configured_secret_key:
+    raise ImproperlyConfigured("Set DJANGO_SECRET_KEY to a long, unique value when DEBUG is disabled.")
+if not DEBUG and not _configured_hosts:
+    raise ImproperlyConfigured("Set DJANGO_ALLOWED_HOSTS to the production host names when DEBUG is disabled.")
+
+SECRET_KEY = _configured_secret_key or "dev-only-change-this-key-before-deployment"
 ALLOWED_HOSTS = [
     host.strip()
-    for host in os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+    for host in (_configured_hosts or "localhost,127.0.0.1").split(",")
     if host.strip()
 ]
+
+# Development stays convenient; production uses HTTPS and secure session cookies by default.
+SECURE_SSL_REDIRECT = _env_bool("DJANGO_SECURE_SSL_REDIRECT", not DEBUG)
+SECURE_HSTS_SECONDS = int(os.environ.get("DJANGO_SECURE_HSTS_SECONDS", "31536000" if not DEBUG else "0"))
+SESSION_COOKIE_SECURE = _env_bool("DJANGO_SESSION_COOKIE_SECURE", not DEBUG)
+CSRF_COOKIE_SECURE = _env_bool("DJANGO_CSRF_COOKIE_SECURE", not DEBUG)
 
 INSTALLED_APPS = [
     "django.contrib.admin",

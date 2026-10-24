@@ -35,51 +35,35 @@
   }
 
   const banner = document.querySelector('.home-hero');
-  const bannerImage = banner && banner.querySelector('.home-hero-background');
+  const bannerSlides = banner ? Array.from(banner.querySelectorAll('.home-hero-background')) : [];
   const bannerControls = banner && banner.querySelector('.home-banner-controls');
 
-  if (banner && bannerImage && bannerControls) {
-    const candidates = [bannerImage.currentSrc || bannerImage.src];
-    ['bannerTwo', 'bannerThree', 'bannerFour'].forEach(function (key) {
-      const source = banner.dataset[key];
-      if (source) candidates.push(new URL(source, window.location.href).href);
-    });
+  if (bannerSlides.length) {
+    let activeSlide = Math.max(0, bannerSlides.findIndex(function (slide) {
+      return slide.classList.contains('is-active');
+    }));
+    const counter = bannerControls && bannerControls.querySelector('.home-banner-count');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    Promise.all(candidates.map(function (source) {
-      return new Promise(function (resolve) {
-        const probe = new Image();
-        probe.onload = function () { resolve(source); };
-        probe.onerror = function () { resolve(null); };
-        probe.src = source;
-      });
-    })).then(function (loaded) {
-      const slides = loaded.filter(Boolean);
-      if (slides.length < 2) return;
+    function showSlide(index) {
+      bannerSlides[activeSlide].classList.remove('is-active');
+      activeSlide = (index + bannerSlides.length) % bannerSlides.length;
+      bannerSlides[activeSlide].classList.add('is-active');
+      if (counter) counter.textContent = (activeSlide + 1) + ' / ' + bannerSlides.length;
+    }
 
-      let activeSlide = 0;
-      const counter = bannerControls.querySelector('.home-banner-count');
-      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-      function showSlide(index) {
-        activeSlide = (index + slides.length) % slides.length;
-        counter.textContent = (activeSlide + 1) + ' / ' + slides.length;
-        bannerImage.classList.add('is-changing');
-        window.setTimeout(function () {
-          bannerImage.onload = function () { bannerImage.classList.remove('is-changing'); };
-          bannerImage.src = slides[activeSlide];
-        }, 220);
-      }
-
+    if (bannerSlides.length > 1 && bannerControls) {
       bannerControls.hidden = false;
-      showSlide(0);
+      if (counter) counter.textContent = (activeSlide + 1) + ' / ' + bannerSlides.length;
       bannerControls.querySelectorAll('[data-banner-step]').forEach(function (button) {
         button.addEventListener('click', function () {
           showSlide(activeSlide + Number(button.dataset.bannerStep));
         });
       });
-
-      if (!reducedMotion) window.setInterval(function () { showSlide(activeSlide + 1); }, 6500);
-    });
+      if (!reducedMotion) {
+        window.setInterval(function () { showSlide(activeSlide + 1); }, 6500);
+      }
+    }
   }
 
   const galleryButtons = document.querySelectorAll('.gallery-photo');

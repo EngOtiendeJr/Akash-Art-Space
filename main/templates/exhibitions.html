@@ -9,17 +9,11 @@
         <div class="container page-intro__inner">
             <p class="eyebrow">Art in focus</p>
             <h1>Exhibitions</h1>
-            <p>Explore what is on view, see what is coming up, or revisit exhibitions from the gallery archive.</p>
         </div>
     </section>
 
     <section class="section gallery-section page-listing" aria-labelledby="exhibition-list-title">
         <div class="container">
-            <div class="section-heading">
-                <p class="eyebrow">The Akash Art Space</p>
-                <h2 id="exhibition-list-title">All exhibitions</h2>
-                <p class="section-intro">Browse exhibitions by date, with the latest listings first.</p>
-            </div>
             {% if exhibitions %}
                 <div class="exhibition-text-list">
                     {% for exhibition in exhibitions %}

@@ -16,7 +16,7 @@
             <div>
                 <p class="akash-dashboard__eyebrow">Gallery management</p>
                 <h1>Your gallery, at a glance</h1>
-                <p>Manage the artist profile shown on About, upload artworks and list dated exhibitions.</p>
+                <p>Manage the artist profile, artwork, homepage banners, collections and exhibitions from one place.</p>
             </div>
             <div class="akash-dashboard__welcome-actions">
                 {% if perms.main.add_exhibition %}
@@ -60,6 +60,13 @@
                     <span class="akash-metric__label">All exhibitions</span>
                     <strong>{{ exhibition_count }}</strong>
                     <span class="akash-metric__hint">Manage exhibition records <span aria-hidden="true">→</span></span>
+                </a>
+            {% endif %}
+            {% if can_view_homebanners %}
+                <a class="akash-metric" href="{% url 'admin:main_homebanner_changelist' %}">
+                    <span class="akash-metric__label">Homepage banners</span>
+                    <strong>{{ homebanner_count }}</strong>
+                    <span class="akash-metric__hint">Manage homepage rotation <span aria-hidden="true">→</span></span>
                 </a>
             {% endif %}
         </section>
@@ -107,7 +114,13 @@
             <aside class="akash-panel akash-panel--quick">
                 <p class="akash-dashboard__eyebrow">Shortcuts</p>
                 <h2>Quick actions</h2>
-                <nav class="akash-quick-links" aria-label="Admin quick actions">
+                <label class="akash-quick-search">
+                    <span class="visually-hidden">Filter quick actions</span>
+                    <span class="akash-quick-search__icon" aria-hidden="true">⌕</span>
+                    <input type="search" data-admin-shortcuts-search placeholder="Find a task…" autocomplete="off">
+                    <kbd>/</kbd>
+                </label>
+                <nav class="akash-quick-links" data-admin-shortcuts aria-label="Admin quick actions">
                     {% if perms.main.add_artist %}
                         {% if not artist_profile %}<a href="{% url 'admin:main_artist_add' %}"><span class="akash-quick-links__icon" aria-hidden="true">＋</span><span><strong>Set up artist profile</strong><small>Add the biography, portrait and contact links shown on About</small></span><span aria-hidden="true">→</span></a>{% endif %}
                     {% endif %}
@@ -119,6 +132,18 @@
                     {% endif %}
                     {% if perms.main.add_artwork %}
                         <a href="{% url 'admin:main_artwork_add' %}"><span class="akash-quick-links__icon" aria-hidden="true">＋</span><span><strong>Add artwork</strong><small>Upload a work with its artist and details</small></span><span aria-hidden="true">→</span></a>
+                    {% endif %}
+                    {% if perms.main.add_homebanner %}
+                        <a href="{% url 'admin:main_homebanner_add' %}"><span class="akash-quick-links__icon" aria-hidden="true">＋</span><span><strong>Add homepage banner</strong><small>Upload an image for the homepage rotation</small></span><span aria-hidden="true">→</span></a>
+                    {% endif %}
+                    {% if perms.main.view_homebanner %}
+                        <a href="{% url 'admin:main_homebanner_changelist' %}"><span class="akash-quick-links__icon" aria-hidden="true">↗</span><span><strong>Manage homepage banners</strong><small>Set banner visibility and rotation order</small></span><span aria-hidden="true">→</span></a>
+                    {% endif %}
+                    {% if perms.main.view_exploretopic %}
+                        <a href="{% url 'admin:main_exploretopic_changelist' %}"><span class="akash-quick-links__icon" aria-hidden="true">↗</span><span><strong>Manage Explore topics</strong><small>Add, hide, show or reorder the About page topics</small></span><span aria-hidden="true">→</span></a>
+                    {% endif %}
+                    {% if perms.main.add_exploretopic %}
+                        <a href="{% url 'admin:main_exploretopic_add' %}"><span class="akash-quick-links__icon" aria-hidden="true">＋</span><span><strong>Add an Explore topic</strong><small>Create a new topic and its gallery-style page</small></span><span aria-hidden="true">→</span></a>
                     {% endif %}
                     {% if perms.main.view_artwork %}
                         <a href="{% url 'admin:main_artwork_changelist' %}"><span class="akash-quick-links__icon" aria-hidden="true">↗</span><span><strong>Manage gallery artworks</strong><small>Publish, reorder or update displayed works</small></span><span aria-hidden="true">→</span></a>
@@ -134,7 +159,40 @@
                     {% endif %}
                     <a href="{% url 'main:home' %}" target="_blank" rel="noopener noreferrer"><span class="akash-quick-links__icon" aria-hidden="true">↗</span><span><strong>View the public site</strong><small>Open the gallery website in a new tab</small></span><span aria-hidden="true">→</span></a>
                 </nav>
+                <p class="akash-quick-search__empty" data-admin-shortcuts-empty hidden>No matching actions. Try another search.</p>
             </aside>
         </div>
+
+        {% if can_view_explore_topics %}
+            <section class="akash-panel akash-explore-pages" aria-labelledby="akash-explore-pages-title">
+                <div class="akash-panel__heading">
+                    <div>
+                        <p class="akash-dashboard__eyebrow">Separate About page collections</p>
+                        <h2 id="akash-explore-pages-title">Artwork uploads by topic</h2>
+                    </div>
+                    <a href="{% url 'admin:main_exploretopic_changelist' %}">Manage topics <span aria-hidden="true">→</span></a>
+                </div>
+                <p class="akash-explore-pages__intro">Open a named page to upload and edit only the images for that collection. New topics appear here automatically.</p>
+                {% if explore_topics %}
+                    <nav class="akash-explore-pages__list" aria-label="Edit individual Explore pages">
+                        {% for topic in explore_topics %}
+                            {% if perms.main.change_exploretopic %}
+                                <a href="{% url 'admin:main_exploreartwork_changelist' %}?topic__id__exact={{ topic.pk }}">
+                            {% else %}<div class="akash-explore-pages__item">
+                            {% endif %}
+                                <span><strong>{{ topic.name }} uploads</strong><small>{{ topic.uploaded_artworks.count }} images · {% if topic.is_visible %}Visible on About{% else %}Hidden from visitors{% endif %}. Open to upload or edit this collection.</small></span>
+                                {% if perms.main.change_exploretopic %}<span aria-hidden="true">→</span>{% endif %}
+                            {% if perms.main.change_exploretopic %}</a>{% else %}</div>{% endif %}
+                        {% endfor %}
+                    </nav>
+                {% else %}
+                    <div class="akash-empty-state">
+                        <h3>No topic upload options yet</h3>
+                        <p>Add an Explore topic to create its own named upload option and image collection.</p>
+                    </div>
+                {% endif %}
+                {% if perms.main.add_exploretopic %}<a class="akash-text-link akash-explore-pages__add" href="{% url 'admin:main_exploretopic_add' %}">Add an upload option <span aria-hidden="true">＋</span></a>{% endif %}
+            </section>
+        {% endif %}
     </div>
 {% endblock %}

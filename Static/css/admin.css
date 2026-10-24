@@ -250,3 +250,277 @@ body:not(.login) .object-tools a:hover {
     box-sizing: border-box;
   }
 }
+
+
+/* Refined admin workspace styling shared by dashboard, lists and edit forms. */
+body:not(.login) {
+  background: #F7F3EB;
+  color: #292929;
+}
+
+body:not(.login) #main,
+body:not(.login) #content {
+  min-width: 0;
+}
+
+body:not(.login) #content {
+  max-width: 1680px;
+  margin-inline: auto;
+}
+
+body:not(.login) #nav-sidebar {
+  border-right: 1px solid #E3DED5;
+  background: #FFFFFF;
+}
+
+body:not(.login) #nav-sidebar .current-app .section,
+body:not(.login) #nav-sidebar .current-model {
+  border-left: 3px solid #c30010;
+  background: #FFF8F2;
+}
+
+body:not(.login) #nav-sidebar a,
+body:not(.login) #nav-sidebar th a {
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+body:not(.login) #nav-sidebar a:hover {
+  background: #FFF8F2;
+  color: #c30010;
+}
+
+body:not(.login) .module,
+body:not(.login) #changelist,
+body:not(.login) .inline-group,
+body:not(.login) .submit-row {
+  border: 1px solid #E3DED5;
+  border-radius: 12px;
+  background: #FFFFFF;
+  box-shadow: 0 8px 24px rgba(16, 42, 60, 0.045);
+}
+
+body:not(.login) #changelist {
+  padding: 14px;
+}
+
+body:not(.login) #changelist .results {
+  overflow-x: auto;
+  border-radius: 8px;
+}
+
+body:not(.login) #changelist table thead th {
+  background: #F7F3EB;
+  color: #4A4F52;
+  font-size: 0.72rem;
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+}
+
+body:not(.login) #changelist table tbody tr {
+  transition: background-color 140ms ease;
+}
+
+body:not(.login) #changelist table tbody tr:hover {
+  background: #FFF8F2;
+}
+
+body:not(.login) .paginator {
+  padding: 12px 4px 2px;
+  color: #6D747A;
+}
+
+body:not(.login) .paginator a,
+body:not(.login) .paginator .this-page {
+  display: inline-block;
+  min-width: 30px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  text-align: center;
+}
+
+body:not(.login) .paginator .this-page {
+  background: #102A3C;
+  color: #FFFFFF;
+}
+
+body:not(.login) .object-tools {
+  margin-top: 0;
+}
+
+body:not(.login) .object-tools a {
+  min-height: 36px;
+  padding: 9px 14px;
+}
+
+body:not(.login) .submit-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 9px;
+  padding: 14px;
+}
+
+body:not(.login) .submit-row input,
+body:not(.login) .submit-row .button {
+  min-height: 40px;
+  padding: 9px 15px;
+  transition: transform 140ms ease, background-color 140ms ease;
+}
+
+body:not(.login) .submit-row input:hover,
+body:not(.login) .submit-row .button:hover {
+  transform: translateY(-1px);
+}
+
+body:not(.login) .form-row {
+  padding: 16px 18px;
+  border-bottom: 1px solid #F0EDE7;
+}
+
+body:not(.login) .form-row:last-child {
+  border-bottom: 0;
+}
+
+body:not(.login) .aligned label,
+body:not(.login) .form-row label {
+  line-height: 1.45;
+}
+
+body:not(.login) input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="file"]),
+body:not(.login) textarea,
+body:not(.login) select {
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 1px solid #C9C2B7;
+  background-color: #FFFFFF;
+  transition: border-color 140ms ease, box-shadow 140ms ease;
+}
+
+body:not(.login) textarea {
+  min-height: 120px;
+}
+
+body:not(.login) input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="file"]):focus,
+body:not(.login) textarea:focus,
+body:not(.login) select:focus {
+  border-color: #D9803B;
+  box-shadow: 0 0 0 3px rgba(217, 128, 59, 0.14);
+  outline: 0;
+}
+
+body:not(.login) .messagelist li {
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(16, 42, 60, 0.06);
+}
+
+body:not(.login) .deletelink,
+body:not(.login) a.deletelink:link,
+body:not(.login) a.deletelink:visited {
+  border-radius: 7px;
+}
+
+.akash-quick-search {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 9px;
+  margin: 0 0 8px;
+  padding: 0 10px;
+  border: 1px solid #E3DED5;
+  border-radius: 9px;
+  background: #FAF8F4;
+  color: #6D747A;
+  transition: border-color 150ms ease, box-shadow 150ms ease, background-color 150ms ease;
+}
+
+.akash-quick-search:focus-within {
+  border-color: #D9803B;
+  background: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(217, 128, 59, 0.12);
+}
+
+.akash-quick-search__icon {
+  color: #c30010;
+  font-size: 1.2rem;
+}
+
+.akash-quick-search input[type="search"] {
+  width: 100%;
+  min-width: 0;
+  min-height: 40px;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #292929;
+  box-shadow: none;
+}
+
+.akash-quick-search input[type="search"]:focus {
+  border: 0;
+  box-shadow: none;
+}
+
+.akash-quick-search kbd {
+  padding: 2px 6px;
+  border: 1px solid #E3DED5;
+  border-radius: 5px;
+  background: #FFFFFF;
+  color: #6D747A;
+  font: 0.72rem/1.4 ui-monospace, monospace;
+}
+
+.akash-quick-search__empty {
+  margin: 12px 0 0;
+  color: #6D747A;
+  font-size: 0.82rem;
+}
+
+.akash-quick-search__empty[hidden],
+.akash-quick-links > a[hidden] {
+  display: none;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+@media (max-width: 767px) {
+  body:not(.login) #changelist {
+    padding: 8px;
+  }
+
+  body:not(.login) .form-row {
+    padding: 13px 12px;
+  }
+
+  body:not(.login) .submit-row {
+    align-items: stretch;
+  }
+
+  body:not(.login) .submit-row input,
+  body:not(.login) .submit-row .button {
+    flex: 1 1 140px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body:not(.login) *,
+  .akash-quick-search {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+
+/* Let the management workspace use the available browser width. */
+body:not(.login) #content {
+  max-width: none;
+  margin-inline: 0;
+}

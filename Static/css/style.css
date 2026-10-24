@@ -288,11 +288,11 @@ h2 {
   height: 100%;
   object-fit: cover;
   object-position: center 48%;
-  opacity: 1;
-  transition: opacity 420ms ease;
+  opacity: 0;
+  transition: opacity 700ms ease;
 }
-.home-hero-background.is-changing {
-  opacity: 0.15;
+.home-hero-background.is-active {
+  opacity: 1;
 }
 .home-banner-controls {
   position: absolute;
@@ -993,31 +993,84 @@ h2 {
   overflow: hidden;
   min-width: 0;
 }
-.about-feature-card--warm {
-  background: #fff4eb;
+.about-collections > .eyebrow {
+  margin: 0 0 6px;
+  color: var(--orange);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
-.about-list {
-  display: grid;
-  gap: 12px;
-  margin: 18px 0 0;
+.about-collections > h2 {
+  margin-top: 0;
+}
+.about-collections > p:not(.eyebrow) {
+  margin: 0;
+}
+.about-collections .about-list {
+  gap: 0;
+  margin-top: 22px;
+  border-top: 1px solid var(--border);
+}
+.about-collections .about-list li {
   padding: 0;
+  border-bottom: 1px solid var(--border);
+}
+.about-collections .about-list li::before {
+  display: none;
+}
+.about-collections .about-list a {
+  display: flex;
+  min-height: 56px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 8px;
+  font-family: var(--serif);
+  font-size: 1.08rem;
+  text-decoration: none;
+  transition: color 160ms ease, padding-inline 160ms ease, background-color 160ms ease;
+}
+.about-collections .about-list a::after {
+  color: var(--orange);
+  content: "→";
+  font-family: sans-serif;
+  font-size: 1.1rem;
+  transition: transform 160ms ease, color 160ms ease;
+}
+.about-collections .about-list a:hover,
+.about-collections .about-list a:focus-visible {
+  padding-inline: 14px 8px;
+  background: rgba(195, 0, 16, 0.04);
+  color: var(--red-dark);
+}
+.about-collections .about-list a:hover::after,
+.about-collections .about-list a:focus-visible::after {
+  transform: translateX(3px);
+  color: var(--red);
+}
+@media (prefers-reduced-motion: reduce) {
+  .about-collections .about-list a,
+  .about-collections .about-list a::after {
+    transition: none;
+  }
+}
+.topic-breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 24px;
   color: var(--muted);
-  list-style: none;
+  font-size: 0.9rem;
 }
-.about-list li {
-  position: relative;
-  padding-left: 22px;
-  line-height: 1.6;
+.topic-breadcrumb a {
+  color: var(--red);
+  text-decoration: none;
 }
-.about-list li::before {
-  position: absolute;
-  top: 0.65em;
-  left: 1px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--orange);
-  content: "";
+.topic-breadcrumb a:hover,
+.topic-breadcrumb a:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 .about-visit-card {
   display: flex;
@@ -1731,20 +1784,17 @@ a.home-exhibition-image:hover img {
 .artwork-description-toggle summary {
   position: absolute;
   z-index: 2;
-  right: 14px;
-  bottom: 14px;
-  display: grid;
-  width: 42px;
-  height: 42px;
-  place-items: center;
-  border: 1px solid rgba(255, 255, 255, 0.75);
-  border-radius: 50%;
-  background: var(--blue-dark);
-  color: #FFFFFF;
-  font-size: 1rem;
-  font-weight: 700;
+  inset: 0;
+  display: block;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
   cursor: pointer;
   list-style: none;
+}
+.artwork-description-toggle summary:focus-visible {
+  outline: 3px solid var(--orange);
+  outline-offset: -5px;
 }
 .artwork-description-toggle summary::-webkit-details-marker {
   display: none;
@@ -2098,9 +2148,11 @@ a.home-exhibition-image:hover img {
 .contact-social__links {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 10px;
 }
-.contact-social__links a {
+.contact-social__links a,
+.contact-social__icon {
   display: inline-flex;
   width: 44px;
   min-height: 42px;
@@ -2608,5 +2660,66 @@ address,
 
   .page-intro__inner {
     padding-inline: 14px;
+  }
+}
+
+
+.home-explore-empty {
+  color: var(--muted);
+  text-align: center;
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-explore-item,
+  .home-explore-item__action {
+    transition: none;
+  }
+}
+
+
+/* Gallery artworks: consistent frames, full artwork visibility, and soft edges. */
+.artwork-listing .gallery-grid {
+  align-items: stretch;
+  grid-auto-rows: 1fr;
+}
+.artwork-listing .artwork-card {
+  min-height: 100%;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--white);
+  box-shadow: 0 10px 28px rgba(40, 28, 22, 0.07);
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+.artwork-listing .artwork-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 36px rgba(40, 28, 22, 0.12);
+}
+.artwork-listing .artwork-image {
+  display: grid;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  aspect-ratio: 1 / 1;
+  flex: 0 0 auto;
+  place-items: center;
+  overflow: hidden;
+  background: #FFFFFF;
+}
+.artwork-listing .artwork-image > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+.artwork-listing .artwork-card .gallery-caption {
+  border-top: 1px solid var(--border);
+  border-radius: 0 0 15px 15px;
+  background: var(--white);
+}
+@media (prefers-reduced-motion: reduce) {
+  .artwork-listing .artwork-card {
+    transition: none;
   }
 }
