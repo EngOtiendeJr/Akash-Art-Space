@@ -1,0 +1,25 @@
+{% load static %}
+
+<footer class="footer" id="site-footer">
+    <div class="container footer-inner">
+        <section class="footer-brand-block" aria-label="About The Akash Art Space">
+            <div class="footer-brand">
+                <img class="footer-logo" src="{% static 'img/logo.jpg' %}" alt="">
+                <span>THE AKASH ART SPACE</span>
+            </div>
+            <p class="footer-tagline">A space for art, ideas, and creative expression in Nairobi.</p>
+        </section>
+
+        <section class="footer-contact" aria-labelledby="footer-contact-title">
+            <h2 class="footer-heading" id="footer-contact-title">Visit the gallery</h2>
+            <address>xxxxxxxxx xx Estate xxxx<br>Nairobi, Kenya<br>P.O. Box xxx, xxxxx</address>
+            <p class="footer-contact__detail">+254 xxxxxxxxxx</p>
+            <p class="footer-contact__detail">xxxxxxxxxxxx@gmail.com</p>
+            <p class="footer-appointment">Visits are by appointment.</p>
+        </section>
+
+        <div class="footer-bottom">
+            <p>© {% now "Y" %} The Akash Art Space. All rights reserved.</p>
+        </div>
+    </div>
+</footer>

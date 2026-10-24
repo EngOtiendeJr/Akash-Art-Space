@@ -1,0 +1,140 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/admin-dashboard.css' %}">
+{% endblock %}
+
+{% block nav-breadcrumbs %}{% endblock %}
+{% block nav-sidebar %}{% endblock %}
+{% block content_title %}{% endblock %}
+
+{% block content %}
+    <div class="akash-dashboard">
+        <section class="akash-dashboard__welcome">
+            <div>
+                <p class="akash-dashboard__eyebrow">Gallery management</p>
+                <h1>Your gallery, at a glance</h1>
+                <p>Manage the artist profile shown on About, upload artworks and list dated exhibitions.</p>
+            </div>
+            <div class="akash-dashboard__welcome-actions">
+                {% if perms.main.add_exhibition %}
+                    <a class="akash-button akash-button--light" href="{% url 'admin:main_exhibition_add' %}">Add an exhibition <span aria-hidden="true">+</span></a>
+                {% endif %}
+                {% if perms.main.add_artist and not artist_profile %}
+                    <a class="akash-button akash-button--outline" href="{% url 'admin:main_artist_add' %}">Set up artist profile <span aria-hidden="true">+</span></a>
+                {% elif perms.main.change_artist and artist_profile %}
+                    <a class="akash-button akash-button--outline" href="{% url 'admin:main_artist_change' artist_profile.pk %}">Edit artist profile <span aria-hidden="true">↗</span></a>
+                {% endif %}
+                {% if perms.main.add_artwork %}
+                    <a class="akash-button akash-button--outline" href="{% url 'admin:main_artwork_add' %}">Add artwork <span aria-hidden="true">+</span></a>
+                {% endif %}
+            </div>
+        </section>
+
+        <section class="akash-dashboard__metrics" aria-label="Gallery overview">
+            {% if can_view_artists %}
+                <a class="akash-metric" href="{% url 'admin:main_artist_changelist' %}">
+                    <span class="akash-metric__label">About page artist</span>
+                    <strong>{% if artist_profile %}{{ artist_profile.name }}{% else %}Not set{% endif %}</strong>
+                    <span class="akash-metric__hint">Manage artist profile <span aria-hidden="true">→</span></span>
+                </a>
+            {% endif %}
+            {% if can_view_artworks %}
+                <a class="akash-metric" href="{% url 'admin:main_artwork_changelist' %}">
+                    <span class="akash-metric__label">Gallery artworks</span>
+                    <strong>{{ artwork_count }}</strong>
+                    <span class="akash-metric__hint">Manage displayed works <span aria-hidden="true">→</span></span>
+                </a>
+            {% endif %}
+            {% if can_view_users %}
+                <a class="akash-metric" href="{% url 'admin:auth_user_changelist' %}">
+                    <span class="akash-metric__label">Team accounts</span>
+                    <strong>{{ user_count }}</strong>
+                    <span class="akash-metric__hint">Manage staff sign-ins <span aria-hidden="true">→</span></span>
+                </a>
+            {% endif %}
+            {% if can_view_exhibitions %}
+                <a class="akash-metric" href="{% url 'admin:main_exhibition_changelist' %}">
+                    <span class="akash-metric__label">All exhibitions</span>
+                    <strong>{{ exhibition_count }}</strong>
+                    <span class="akash-metric__hint">Manage exhibition records <span aria-hidden="true">→</span></span>
+                </a>
+            {% endif %}
+        </section>
+
+        <div class="akash-dashboard__columns">
+            {% if can_view_exhibitions %}
+                <section class="akash-panel">
+                    <div class="akash-panel__heading">
+                        <div>
+                            <p class="akash-dashboard__eyebrow">Latest show dates</p>
+                            <h2>Exhibitions</h2>
+                        </div>
+                        <a href="{% url 'admin:main_exhibition_changelist' %}">View all <span aria-hidden="true">→</span></a>
+                    </div>
+                    {% if recent_exhibitions %}
+                        <div class="akash-table-wrap">
+                            <table class="akash-table">
+                                <thead><tr><th scope="col">Exhibition</th><th scope="col">Show date</th><th scope="col">Updated</th></tr></thead>
+                                <tbody>
+                                    {% for exhibition in recent_exhibitions %}
+                                        <tr>
+                                            <td>
+                                                {% if perms.main.change_exhibition %}
+                                                    <a href="{% url 'admin:main_exhibition_change' exhibition.pk %}">{{ exhibition.title }}</a>
+                                                {% else %}{{ exhibition.title }}{% endif %}
+                                                {% if exhibition.description %}<small>{{ exhibition.description|truncatewords:12 }}</small>{% endif %}
+                                            </td>
+                                            <td>{{ exhibition.start_date|date:"j M Y"|default:"Not set" }}</td>
+                                            <td>{{ exhibition.updated_at|date:"j M Y" }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="akash-empty-state">
+                            <h3>No exhibitions yet</h3>
+                            <p>Add an exhibition to show it on the homepage and exhibitions page.</p>
+                            {% if perms.main.add_exhibition %}<a class="akash-text-link" href="{% url 'admin:main_exhibition_add' %}">Create the first exhibition <span aria-hidden="true">→</span></a>{% endif %}
+                        </div>
+                    {% endif %}
+                </section>
+            {% endif %}
+
+            <aside class="akash-panel akash-panel--quick">
+                <p class="akash-dashboard__eyebrow">Shortcuts</p>
+                <h2>Quick actions</h2>
+                <nav class="akash-quick-links" aria-label="Admin quick actions">
+                    {% if perms.main.add_artist %}
+                        {% if not artist_profile %}<a href="{% url 'admin:main_artist_add' %}"><span class="akash-quick-links__icon" aria-hidden="true">＋</span><span><strong>Set up artist profile</strong><small>Add the biography, portrait and contact links shown on About</small></span><span aria-hidden="true">→</span></a>{% endif %}
+                    {% endif %}
+                    {% if perms.main.view_artist %}
+                        <a href="{% url 'admin:main_artist_changelist' %}"><span class="akash-quick-links__icon" aria-hidden="true">↗</span><span><strong>Manage artist profile</strong><small>Update the biography, portrait and social links on About</small></span><span aria-hidden="true">→</span></a>
+                    {% endif %}
+                    {% if perms.main.add_exhibition %}
+                        <a href="{% url 'admin:main_exhibition_add' %}"><span class="akash-quick-links__icon" aria-hidden="true">＋</span><span><strong>Add an exhibition</strong><small>Enter a title, date and optional description</small></span><span aria-hidden="true">→</span></a>
+                    {% endif %}
+                    {% if perms.main.add_artwork %}
+                        <a href="{% url 'admin:main_artwork_add' %}"><span class="akash-quick-links__icon" aria-hidden="true">＋</span><span><strong>Add artwork</strong><small>Upload a work with its artist and details</small></span><span aria-hidden="true">→</span></a>
+                    {% endif %}
+                    {% if perms.main.view_artwork %}
+                        <a href="{% url 'admin:main_artwork_changelist' %}"><span class="akash-quick-links__icon" aria-hidden="true">↗</span><span><strong>Manage gallery artworks</strong><small>Publish, reorder or update displayed works</small></span><span aria-hidden="true">→</span></a>
+                    {% endif %}
+                    {% if perms.main.view_exhibition %}
+                        <a href="{% url 'admin:main_exhibition_changelist' %}"><span class="akash-quick-links__icon" aria-hidden="true">↗</span><span><strong>Manage exhibitions</strong><small>Review and update exhibition titles, dates and descriptions</small></span><span aria-hidden="true">→</span></a>
+                    {% endif %}
+                    {% if perms.auth.view_user %}
+                        <a href="{% url 'admin:auth_user_changelist' %}"><span class="akash-quick-links__icon" aria-hidden="true">↗</span><span><strong>Manage team access</strong><small>Update staff accounts and permissions</small></span><span aria-hidden="true">→</span></a>
+                    {% endif %}
+                    {% if perms.auth.view_group %}
+                        <a href="{% url 'admin:auth_group_changelist' %}"><span class="akash-quick-links__icon" aria-hidden="true">⚙</span><span><strong>Manage access roles</strong><small>Set reusable permissions for team members</small></span><span aria-hidden="true">→</span></a>
+                    {% endif %}
+                    <a href="{% url 'main:home' %}" target="_blank" rel="noopener noreferrer"><span class="akash-quick-links__icon" aria-hidden="true">↗</span><span><strong>View the public site</strong><small>Open the gallery website in a new tab</small></span><span aria-hidden="true">→</span></a>
+                </nav>
+            </aside>
+        </div>
+    </div>
+{% endblock %}

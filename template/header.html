@@ -1,0 +1,21 @@
+{% load static %}
+
+<a class="skip" href="#main-content">Skip to main content</a>
+
+<header class="site-header" id="site-header">
+    <div class="container nav-inner">
+        <a class="brand" href="{% url 'main:home' %}" aria-label="The Akash Art Space home">
+            <img class="brand-logo" src="{% static 'img/logo.jpg' %}" alt="The Akash Art Space — Creating a conscious planet">
+        </a>
+        <button class="menu-toggle" id="menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="nav-links">
+            <span></span><span></span><span></span>
+        </button>
+        <nav class="nav-links" id="nav-links" aria-label="Main navigation">
+            <a href="{% url 'main:home' %}"{% if request.resolver_match.url_name == 'home' %} class="is-active" aria-current="page"{% endif %}>Home</a>
+            <a href="{% url 'main:about' %}"{% if request.resolver_match.url_name == 'about' %} class="is-active" aria-current="page"{% endif %}>About</a>
+            <a href="{% url 'main:exhibitions' %}"{% if request.resolver_match.url_name == 'exhibitions' or request.resolver_match.url_name == 'exhibition_archive' or request.resolver_match.url_name == 'upcoming_exhibitions' or request.resolver_match.url_name == 'current_exhibitions' or request.resolver_match.url_name == 'exhibition_detail' %} class="is-active" aria-current="page"{% endif %}>Exhibitions</a>
+            <a href="{% url 'main:gallery' %}"{% if request.resolver_match.url_name == 'gallery' %} class="is-active" aria-current="page"{% endif %}>Gallery</a>
+            <a href="{% url 'main:contact' %}"{% if request.resolver_match.url_name == 'contact' %} class="is-active" aria-current="page"{% endif %}>Contact</a>
+        </nav>
+    </div>
+</header>

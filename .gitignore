@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django local data and collected assets
+/db.sqlite3
+/media/
+/staticfiles/
+
+# Local environment and secrets
+.venv/
+venv/
+.env

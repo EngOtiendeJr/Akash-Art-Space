@@ -1,0 +1,64 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}{% if form.errors %}Sign-in error | {% endif %}{{ site_title }}{% endblock %}
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'admin/css/login.css' %}">
+    <link rel="stylesheet" href="{% static 'css/admin-login.css' %}">
+    {{ form.media }}
+{% endblock %}
+{% block bodyclass %}{{ block.super }} login{% endblock %}
+{% block usertools %}{% endblock %}
+{% block nav-global %}{% endblock %}
+{% block nav-sidebar %}{% endblock %}
+{% block content_title %}{% endblock %}
+{% block nav-breadcrumbs %}{% endblock %}
+
+{% block content %}
+    {% if form.errors and not form.non_field_errors %}
+        <p class="errornote">Please correct the sign-in details below.</p>
+    {% endif %}
+    {% for error in form.non_field_errors %}
+        <p class="errornote">{{ error }}</p>
+    {% endfor %}
+
+    <main class="akash-login-shell">
+        <section class="akash-login-card" aria-labelledby="akash-login-title">
+            <p class="akash-login-eyebrow">Gallery administration</p>
+            <h1 id="akash-login-title">Welcome back</h1>
+            <p class="akash-login-intro">Sign in to update artist profiles, upload images, publish exhibitions and manage team access.</p>
+
+            {% if user.is_authenticated %}
+                <p class="errornote">You are signed in as {{ username }}, but this account cannot access the admin area.</p>
+            {% endif %}
+
+            <form action="{{ app_path }}" method="post" id="login-form">
+                {% csrf_token %}
+                <div class="akash-login-field">
+                    <label for="{{ form.username.id_for_label }}">Username</label>
+                    {{ form.username }}
+                    {{ form.username.errors }}
+                </div>
+                <div class="akash-login-field">
+                    <label for="{{ form.password.id_for_label }}">Password</label>
+                    {{ form.password }}
+                    {{ form.password.errors }}
+                    <input type="hidden" name="next" value="{{ next }}">
+                </div>
+                {% url 'admin_password_reset' as password_reset_url %}
+                {% if password_reset_url %}
+                    <p class="akash-login-reset"><a href="{{ password_reset_url }}">Forgot your password?</a></p>
+                {% endif %}
+                <button class="akash-login-submit" type="submit">Sign in <span aria-hidden="true">→</span></button>
+            </form>
+            <p class="akash-login-footnote">Authorized gallery staff only</p>
+        </section>
+
+        <aside class="akash-login-aside" aria-label="Gallery administration information">
+            <img src="{% static 'img/logo.jpg' %}" alt="The Akash Art Space — Creating a conscious planet">
+            <p>Keep the gallery current.</p>
+            <span>Keep artist profiles, exhibition images and gallery information up to date on the public site.</span>
+        </aside>
+    </main>
+{% endblock %}

@@ -1,0 +1,252 @@
+:root {
+  --primary: #102A3C;
+  --primary-fg: #FFFFFF;
+  --secondary: #D9803B;
+  --accent: #D9803B;
+  --header-bg: #102A3C;
+  --header-color: #FFFFFF;
+  --header-link-color: #FFFFFF;
+  --breadcrumbs-bg: #F7F3EB;
+  --breadcrumbs-fg: #4A4F52;
+  --breadcrumbs-link-fg: #102A3C;
+  --link-fg: #c30010;
+  --link-hover-color: #B9652D;
+  --link-selected-fg: #c30010;
+  --button-fg: #FFFFFF;
+  --button-bg: #c30010;
+  --button-hover-bg: #B9652D;
+  --default-button-bg: #c30010;
+  --default-button-hover-bg: #B9652D;
+  --darkened-bg: #F4F0E8;
+  --selected-bg: #FFF8F2;
+  --selected-row: #FFF8F2;
+}
+
+#header {
+  background: #102A3C;
+  color: #F7F3EB;
+}
+
+#header a:link,
+#header a:visited,
+#branding .akash-admin-brand__link span {
+  color: #FFFFFF;
+}
+
+.admin-portrait-thumbnail {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.admin-portrait-preview {
+  width: 150px;
+  height: 150px;
+  border-radius: 14px;
+  object-fit: cover;
+}
+
+.admin-image-thumbnail {
+  display: block;
+  width: 56px;
+  height: 44px;
+  border-radius: 6px;
+  background: #F0E9DF;
+  object-fit: contain;
+  object-position: center;
+}
+
+.admin-exhibition-preview,
+.admin-artwork-preview {
+  max-width: min(100%, 360px);
+  max-height: 260px;
+  border-radius: 12px;
+  object-fit: contain;
+  object-position: center;
+}
+
+.admin-exhibition-preview {
+  max-height: 240px;
+  object-fit: cover;
+}
+
+#header a:hover {
+  color: #D9803B;
+}
+
+#branding .akash-admin-brand__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 58px;
+  text-decoration: none;
+}
+
+#branding .akash-admin-brand__logo {
+  display: block;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center;
+}
+
+#branding .akash-admin-brand__link span {
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+@media (max-width: 767px) {
+  #branding .akash-admin-brand__link {
+    gap: 9px;
+  }
+
+  #branding .akash-admin-brand__logo {
+    width: 46px;
+    height: 46px;
+  }
+
+  #branding .akash-admin-brand__link span {
+    font-size: 1rem;
+  }
+}
+
+/* Calm, consistent controls across the Django admin, not only the dashboard. */
+body:not(.login) #container {
+  min-width: 0;
+}
+
+body:not(.login) #content {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+body:not(.login) .breadcrumbs {
+  padding: 12px 32px;
+}
+
+body:not(.login) .module,
+body:not(.login) .inline-group,
+body:not(.login) #changelist,
+body:not(.login) .submit-row {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+body:not(.login) .aligned label,
+body:not(.login) .form-row label {
+  color: #102A3C;
+  font-weight: 600;
+}
+
+body:not(.login) .help,
+body:not(.login) p.help,
+body:not(.login) .aligned .help,
+body:not(.login) .form-row .help {
+  max-width: 72ch;
+  color: #6D747A;
+  line-height: 1.55;
+}
+
+body:not(.login) input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="file"]),
+body:not(.login) textarea,
+body:not(.login) select {
+  max-width: 100%;
+  border-radius: 7px;
+}
+
+body:not(.login) input[type="file"] {
+  max-width: 100%;
+  padding: 8px;
+  border: 1px dashed #C9C2B7;
+  border-radius: 8px;
+  background: #FAF8F4;
+}
+
+body:not(.login) .submit-row input,
+body:not(.login) .submit-row .button,
+body:not(.login) .object-tools a {
+  border-radius: 7px;
+}
+
+body:not(.login) .submit-row {
+  padding: 14px 18px;
+}
+
+body:not(.login) .form-row.errors {
+  border-radius: 7px;
+}
+
+body:not(.login) a:link,
+body:not(.login) a:visited {
+  color: #c30010;
+}
+
+body:not(.login) a:hover {
+  color: #B9652D;
+}
+
+body:not(.login) :focus-visible {
+  outline: 3px solid rgba(195, 0, 16, 0.3);
+  outline-offset: 2px;
+}
+
+body:not(.login) #changelist .results tbody tr:hover {
+  background: #FFF8F2;
+}
+
+body:not(.login) #changelist .results td,
+body:not(.login) #changelist .results th {
+  vertical-align: middle;
+}
+
+body:not(.login) .submit-row input.default,
+body:not(.login) .submit-row input[type="submit"],
+body:not(.login) .object-tools a {
+  border-color: #c30010;
+  border-radius: 7px;
+  background: #c30010;
+  color: #FFFFFF;
+  font-weight: 700;
+}
+
+body:not(.login) .breadcrumbs {
+  border-bottom: 2px solid #D9803B;
+  background: #F7F3EB;
+  color: #4A4F52;
+}
+
+body:not(.login) #changelist-filter h2,
+body:not(.login) .module caption,
+body:not(.login) .inline-group h2 {
+  background: #102A3C;
+  color: #FFFFFF;
+}
+
+body:not(.login) .submit-row input.default:hover,
+body:not(.login) .submit-row input[type="submit"]:hover,
+body:not(.login) .object-tools a:hover {
+  border-color: #B9652D;
+  background: #B9652D;
+  color: #FFFFFF;
+}
+
+@media (max-width: 767px) {
+  body:not(.login) #content {
+    padding: 16px;
+  }
+
+  body:not(.login) .breadcrumbs {
+    padding-inline: 16px;
+  }
+
+  body:not(.login) .aligned .vTextField,
+  body:not(.login) .aligned input,
+  body:not(.login) .aligned textarea,
+  body:not(.login) .aligned select {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}

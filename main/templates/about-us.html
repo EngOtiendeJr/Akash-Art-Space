@@ -1,0 +1,57 @@
+{% extends "index.html" %}
+
+{% block title %}{{ about_page.title }} | The Akash Art Space{% endblock %}
+{% block meta_description %}{{ about_page.intro_text|truncatechars:155 }}{% endblock %}
+{% block theme_color %}#B8322A{% endblock %}
+
+{% block content %}
+<main id="main-content" class="about-page-main">
+    <section class="page-intro" aria-labelledby="about-title">
+        <div class="container page-intro__inner">
+            <p class="eyebrow">{{ about_page.intro_label }}</p>
+            <h1 id="about-title">{{ about_page.title }}</h1>
+            <p>{{ about_page.intro_text }}</p>
+        </div>
+    </section>
+
+    <section class="about-artists-section" id="about-artists" aria-labelledby="about-artists-title">
+        <div class="container">
+            <div class="section-heading">
+                <p class="eyebrow">Artist Biography</p>
+                <h2 id="about-artists-title">Artists at The Akash Art Space</h2>
+                
+            </div>
+            {% if artists %}
+                <div class="gallery-grid about-artists-grid">
+                    {% for artist in artists %}{% include "partials/artist-card.html" with artist=artist %}{% endfor %}
+                </div>
+            {% else %}
+                <div class="home-empty-state">
+                    <h3>Artist profiles are coming soon.</h3>
+                    <p>Artist profiles and work will appear here as they are added by the gallery.</p>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="about-page" aria-label="About the gallery">
+        <div class="about-feature-grid">
+            <article class="about-content-card about-feature-card">
+                <h2>{{ about_page.explore_heading }}</h2>
+                <ul class="about-list">
+                    {% for item in about_page.explore_item_list %}<li>{{ item }}</li>{% endfor %}
+                </ul>
+            </article>
+        </div>
+
+        <section class="about-visit-card" aria-labelledby="about-visit-title">
+            <div>
+                <p class="eyebrow">{{ about_page.visit_label }}</p>
+                <h2 id="about-visit-title">{{ about_page.visit_heading }}</h2>
+                {{ about_page.visit_text|linebreaks }}
+            </div>
+            <a href="{% url 'main:contact' %}" class="btn btn-primary">{{ about_page.visit_button_text }}</a>
+        </section>
+    </section>
+</main>
+{% endblock %}

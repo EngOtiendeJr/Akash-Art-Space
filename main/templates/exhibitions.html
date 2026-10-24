@@ -1,0 +1,43 @@
+{% extends "index.html" %}
+
+{% block title %}Exhibitions | The Akash Art Space{% endblock %}
+{% block meta_description %}Browse current, upcoming and archived exhibitions at The Akash Art Space.{% endblock %}
+
+{% block content %}
+<main id="main-content">
+    <section class="page-intro">
+        <div class="container page-intro__inner">
+            <p class="eyebrow">Art in focus</p>
+            <h1>Exhibitions</h1>
+            <p>Explore what is on view, see what is coming up, or revisit exhibitions from the gallery archive.</p>
+        </div>
+    </section>
+
+    <section class="section gallery-section page-listing" aria-labelledby="exhibition-list-title">
+        <div class="container">
+            <div class="section-heading">
+                <p class="eyebrow">The Akash Art Space</p>
+                <h2 id="exhibition-list-title">All exhibitions</h2>
+                <p class="section-intro">Browse exhibitions by date, with the latest listings first.</p>
+            </div>
+            {% if exhibitions %}
+                <div class="exhibition-text-list">
+                    {% for exhibition in exhibitions %}
+                        <article class="exhibition-list-item">
+                            <h3>{{ exhibition.title }}</h3>
+                            {% if exhibition.description %}<p>{{ exhibition.description|linebreaksbr }}</p>{% endif %}
+                            {% if exhibition.start_date %}<p class="exhibition-dates"><span aria-hidden="true">◷</span> <time datetime="{{ exhibition.start_date|date:'Y-m-d' }}">{{ exhibition.start_date|date:"j F Y" }}</time></p>{% endif %}
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="home-empty-state">
+                    <h2>No exhibitions are listed yet.</h2>
+                    <p>Exhibitions will appear here when they are added by the gallery team.</p>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+</main>
+{% endblock %}
