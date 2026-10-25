@@ -50,6 +50,10 @@ SECURE_SSL_REDIRECT = _env_bool(
     "DJANGO_SECURE_SSL_REDIRECT", not DEBUG
 )
 
+# Render terminates HTTPS at its edge proxy and forwards the original scheme
+# in this header. Trust it so Django does not redirect HTTPS requests again.
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
 SECURE_HSTS_SECONDS = int(
     os.environ.get(
         "DJANGO_SECURE_HSTS_SECONDS",
