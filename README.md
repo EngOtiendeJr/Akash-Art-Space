@@ -13,3 +13,11 @@ Cloudinary and served from its CDN. Without it, local development uses the
 project's `media/` directory. Files previously saved on Render's temporary
 filesystem are not copied automatically; upload those images again in Admin
 after Cloudinary is configured.
+
+## Django Admin account limit
+
+The project allows at most two staff accounts with access to Django Admin.
+The Admin interface does not allow adding users, blocks promotion of a third
+staff account, and the `create_admin` deployment command enforces the same
+limit. Existing accounts are left unchanged; remove staff access from any
+extra account before creating or promoting another one.

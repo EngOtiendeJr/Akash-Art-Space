@@ -1,0 +1,1 @@
+MAX_ADMIN_USERS = 2

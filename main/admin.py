@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import GroupAdmin, UserAdmin
+from django.contrib.auth.forms import UserChangeForm
 from django.contrib.auth.models import Group
 from django import forms
 from django.http import HttpResponseRedirect
@@ -9,6 +10,7 @@ from django.utils.html import format_html
 from django.urls import reverse
 from django.utils.http import urlencode
 
+from .constants import MAX_ADMIN_USERS
 from .models import Artist, Artwork, Exhibition, ExploreArtwork, ExploreTopic, HomeBanner
 
 
@@ -368,6 +370,19 @@ class ArtworkAdmin(admin.ModelAdmin):
 @admin.register(get_user_model(), site=akash_admin_site)
 class GalleryUserAdmin(UserAdmin):
     """Use Django's secure account and password forms on the gallery admin site."""
+
+    class ChangeForm(UserChangeForm):
+        def clean_is_staff(self):
+            is_staff = self.cleaned_data["is_staff"]
+            if is_staff and not self.instance.is_staff:
+                staff_users = get_user_model().objects.filter(is_staff=True).count()
+                if staff_users >= MAX_ADMIN_USERS:
+                    raise forms.ValidationError(
+                        f"Only {MAX_ADMIN_USERS} Django Admin accounts are allowed."
+                    )
+            return is_staff
+
+    form = ChangeForm
 
     list_display = ("username", "email", "first_name", "last_name", "is_staff", "is_active")
     list_filter = ("is_staff", "is_superuser", "is_active", "groups")

@@ -4,6 +4,8 @@ import os
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand, CommandError
 
+from main.constants import MAX_ADMIN_USERS
+
 
 class Command(BaseCommand):
     help = "Create or update the production administrator"
@@ -29,12 +31,25 @@ class Command(BaseCommand):
         user = User.objects.filter(username=username).first()
 
         if user is None:
+            staff_users = User.objects.filter(is_staff=True).count()
+            if staff_users >= MAX_ADMIN_USERS:
+                raise CommandError(
+                    f"Cannot create another administrator: only {MAX_ADMIN_USERS} "
+                    "Django Admin accounts are allowed."
+                )
             user = User.objects.create_superuser(
                 username=username,
                 email=email,
                 password=password,
             )
         else:
+            if not user.is_staff:
+                staff_users = User.objects.filter(is_staff=True).count()
+                if staff_users >= MAX_ADMIN_USERS:
+                    raise CommandError(
+                        f"Cannot promote this account: only {MAX_ADMIN_USERS} "
+                        "Django Admin accounts are allowed."
+                    )
             user.email = email
             user.is_staff = True
             user.is_superuser = True
