@@ -12,6 +12,13 @@ IMAGE_SIGNATURES = (
 
 def validate_gallery_image(upload):
     """Accept common web image formats and keep gallery uploads manageable."""
+    # Django also runs model validators against an existing FieldFile when an
+    # admin form is saved without replacing its image. On ephemeral hosting the
+    # database can reference a file that is no longer on disk; validate only
+    # newly uploaded files so that this does not turn an ordinary save into a 500.
+    if getattr(upload, "_committed", False):
+        return
+
     if upload.size > MAX_GALLERY_IMAGE_SIZE:
         raise ValidationError("Choose an image smaller than 10 MB.")
 
