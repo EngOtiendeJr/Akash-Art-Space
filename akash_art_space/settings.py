@@ -81,6 +81,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "cloudinary_storage",
+    "cloudinary",
     "main.apps.MainConfig",
 ]
 
@@ -209,6 +211,21 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = Path(os.environ.get("MEDIA_ROOT", str(BASE_DIR / "media")))
+
+# Django Admin keeps its normal file picker. When Cloudinary is configured,
+# every model FileField saves directly to durable hosted media; local work
+# continues to use MEDIA_ROOT without requiring Cloudinary credentials.
+if os.environ.get("CLOUDINARY_URL", "").strip():
+    DEFAULT_MEDIA_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+else:
+    DEFAULT_MEDIA_STORAGE = "django.core.files.storage.FileSystemStorage"
+
+STORAGES = {
+    "default": {"BACKEND": DEFAULT_MEDIA_STORAGE},
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
 
 
 # --------------------------------------------------
