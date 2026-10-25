@@ -49,11 +49,16 @@
                 </a>
             {% endif %}
             {% if can_view_users %}
-                <a class="akash-metric" href="{% url 'admin:auth_user_changelist' %}">
-                    <span class="akash-metric__label">Team accounts</span>
-                    <strong>{{ user_count }}</strong>
-                    <span class="akash-metric__hint">Manage staff sign-ins <span aria-hidden="true">→</span></span>
-                </a>
+                <div class="akash-metric akash-metric--team-accounts">
+                    <a class="akash-metric__main" href="{% url 'admin:auth_user_changelist' %}">
+                        <span class="akash-metric__label">Admin users</span>
+                        <strong>{{ user_count }} / {{ max_admin_users }}</strong>
+                        <span class="akash-metric__hint">Manage staff sign-ins <span aria-hidden="true">→</span></span>
+                    </a>
+                    {% if perms.auth.add_user and user_count < max_admin_users %}
+                        <a class="akash-metric__add" href="{% url 'admin:auth_user_add' %}" aria-label="Add Admin user" title="Add Admin user">+</a>
+                    {% endif %}
+                </div>
             {% endif %}
             {% if can_view_exhibitions %}
                 <a class="akash-metric" href="{% url 'admin:main_exhibition_changelist' %}">

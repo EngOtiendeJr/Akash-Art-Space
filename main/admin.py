@@ -57,6 +57,7 @@ class AkashAdminSite(admin.AdminSite):
         can_view_homebanners = request.user.has_perm("main.view_homebanner")
         can_view_explore_topics = request.user.has_perm("main.view_exploretopic")
         can_view_users = request.user.has_perm("auth.view_user")
+        admin_user_count = get_user_model().objects.filter(is_staff=True).count()
         context = {
             "can_view_artists": can_view_artists,
             "artist_profile": Artist.objects.first() if can_manage_artists else None,
@@ -72,7 +73,8 @@ class AkashAdminSite(admin.AdminSite):
                 if can_view_exhibitions else ()
             ),
             "can_view_users": can_view_users,
-            "user_count": get_user_model().objects.count() if can_view_users else None,
+            "user_count": admin_user_count if can_view_users else None,
+            "max_admin_users": MAX_ADMIN_USERS,
         }
         context.update(extra_context or {})
         return super().index(request, extra_context=context)
