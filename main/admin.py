@@ -119,21 +119,36 @@ class ArtistAdmin(admin.ModelAdmin):
 
     @admin.display(description="Portrait")
     def portrait_preview(self, artist):
-        if artist.portrait_image:
+        if artist.has_portrait_image:
             return format_html(
                 '<img src="{}" alt="" class="admin-portrait-thumbnail">',
                 artist.portrait_image.url,
             )
+        if artist.portrait_url:
+            return format_html(
+                '<img src="{}" alt="" class="admin-portrait-thumbnail">',
+                artist.portrait_url,
+            )
+        if artist.portrait_image:
+            return "Uploaded portrait file is missing. Upload it again."
         return "—"
 
     @admin.display(description="Current portrait")
     def portrait_preview_large(self, artist):
-        if artist and artist.portrait_image:
+        if artist and artist.has_portrait_image:
             return format_html(
                 '<img src="{}" alt="Current portrait of {}" class="admin-portrait-preview">',
                 artist.portrait_image.url,
                 artist.name,
             )
+        if artist and artist.portrait_url:
+            return format_html(
+                '<img src="{}" alt="Hosted portrait of {}" class="admin-portrait-preview">',
+                artist.portrait_url,
+                artist.name,
+            )
+        if artist and artist.portrait_image:
+            return "The stored portrait file is missing. Upload it again or add a hosted portrait URL."
         return "Save an uploaded portrait to preview it here."
 
 

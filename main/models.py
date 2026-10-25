@@ -56,6 +56,15 @@ class Artist(models.Model):
             return f"https://wa.me/{digits}"
         return ""
 
+    @property
+    def has_portrait_image(self):
+        if not self.portrait_image:
+            return False
+        try:
+            return self.portrait_image.storage.exists(self.portrait_image.name)
+        except OSError:
+            return False
+
     def __str__(self):
         return self.name
 

@@ -1,5 +1,5 @@
 <article id="artist-{{ artist.pk }}" class="gallery-card artist-card">
-    {% if artist.portrait_image %}
+    {% if artist.has_portrait_image %}
         <div class="home-exhibition-image"><img src="{{ artist.portrait_image.url }}" alt="Portrait of {{ artist.name }}" loading="lazy"></div>
     {% elif artist.portrait_url %}
         <div class="home-exhibition-image"><img src="{{ artist.portrait_url }}" alt="Portrait of {{ artist.name }}" loading="lazy"></div>
