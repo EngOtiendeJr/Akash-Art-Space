@@ -17,7 +17,7 @@ after Cloudinary is configured.
 ## Django Admin account limit
 
 The project allows at most two staff accounts with access to Django Admin.
-The Admin interface does not allow adding users, blocks promotion of a third
+The Users page allows adding accounts, blocks creation or promotion of a third
 staff account, and the `create_admin` deployment command enforces the same
 limit. Existing accounts are left unchanged; remove staff access from any
 extra account before creating or promoting another one.

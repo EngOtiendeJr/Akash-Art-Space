@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import GroupAdmin, UserAdmin
-from django.contrib.auth.forms import UserChangeForm
+from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.contrib.auth.models import Group
 from django import forms
 from django.http import HttpResponseRedirect
@@ -371,6 +371,16 @@ class ArtworkAdmin(admin.ModelAdmin):
 class GalleryUserAdmin(UserAdmin):
     """Use Django's secure account and password forms on the gallery admin site."""
 
+    class AddForm(UserCreationForm):
+        def clean_is_staff(self):
+            is_staff = self.cleaned_data["is_staff"]
+            staff_count = get_user_model().objects.filter(is_staff=True).count()
+            if is_staff and staff_count >= MAX_ADMIN_USERS:
+                raise forms.ValidationError(
+                    f"Only {MAX_ADMIN_USERS} Django Admin accounts are allowed."
+                )
+            return is_staff
+
     class ChangeForm(UserChangeForm):
         def clean_is_staff(self):
             is_staff = self.cleaned_data["is_staff"]
@@ -382,6 +392,7 @@ class GalleryUserAdmin(UserAdmin):
                     )
             return is_staff
 
+    add_form = AddForm
     form = ChangeForm
 
     list_display = ("username", "email", "first_name", "last_name", "is_staff", "is_active")
@@ -406,10 +417,6 @@ class GalleryUserAdmin(UserAdmin):
             "fields": ("username", "email", "first_name", "last_name", "password1", "password2", "is_active", "is_staff"),
         }),
     )
-
-    def has_add_permission(self, request):
-        return False
-
 
 @admin.register(Group, site=akash_admin_site)
 class GalleryGroupAdmin(GroupAdmin):
